@@ -2,6 +2,7 @@
 // http://localhost:3000/isolated/exercise/06.js
 
 import * as React from 'react'
+import { useRef, useState } from 'react'
 
 function UsernameForm({onSubmitUsername}) {
   // 🐨 add a submit event handler here (`handleSubmit`).
@@ -16,16 +17,33 @@ function UsernameForm({onSubmitUsername}) {
   // 🐨 Call `onSubmitUsername` with the value of the input
 
   // 🐨 add the onSubmit handler to the <form> below
+  const unInput = useRef(null)
+  const [username, setUsername] = useState('')
+  const [error, setError] = useState('')
 
   // 🐨 make sure to associate the label to the input.
   // to do so, set the value of 'htmlFor' prop of the label to the id of input
+  function handleSubmit(event) {
+    onSubmitUsername(unInput.current.value);
+    event.preventDefault();
+  }
+
+  function handleChange(event) {
+    const {value} = event.target
+    setUsername(value.toLowerCase())
+    // const isValid = value === value.toLowerCase()
+    // if (!isValid) setError('bad mojo')
+    // else setError('')
+  }
+
   return (
-    <form>
+    <form onSubmit={handleSubmit}>
       <div>
-        <label>Username:</label>
-        <input type="text" />
+        <label htmlFor='inputUsername'>Username:</label>
+        <input ref={unInput} id='inputUsername' type="text" value={username} onChange={handleChange}/>
       </div>
-      <button type="submit">Submit</button>
+      <div style={{color: 'red'}}>{error}</div>
+      <button disabled={Boolean(error)} type="submit">Submit</button>
     </form>
   )
 }
